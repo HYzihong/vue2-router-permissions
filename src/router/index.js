@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-08-08 17:32:34
- * @LastEditTime: 2021-08-10 09:15:54
+ * @LastEditTime: 2021-08-11 16:07:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue2-router-permissions/src/router/index.js
@@ -42,10 +42,8 @@ router.beforeEach((to, from, next) => {
       // store
       //   .dispatch("authorization")
       //   .then((rules) => {
-      // const rules = ["admin"];
-      const rules = { Form: true, List: false, About: true };
       store
-        .dispatch("concatRoutes", rules)
+        .dispatch("concatRoutes")
         .then((routers) => {
           console.log(routers);
           router.addRoutes(routers);

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-08-09 22:59:32
- * @LastEditTime: 2021-08-10 08:30:49
+ * @LastEditTime: 2021-08-11 16:23:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue2-router-permissions/src/router/module/asyncRoutes.js
@@ -26,6 +26,13 @@ const asyncRoutes = [
     meta: {
       role: ["admin"],
     },
+    children: [
+      {
+        path: "aboutChild",
+        name: "AboutChild",
+        component: About,
+      },
+    ],
   },
   {
     path: "/list",
