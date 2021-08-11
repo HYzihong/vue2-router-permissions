@@ -1,18 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-08-08 17:32:34
- * @LastEditTime: 2021-08-10 09:15:54
+ * @LastEditTime: 2021-08-11 14:40:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue2-router-permissions/src/router/index.js
  */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import asyncRoutes from "./module/asyncRoutes";
 import basicsRoutes from "./module/basicsRoutes";
 import { setTitle } from "../utils/router";
 import store from "../store";
-console.log(asyncRoutes);
 Vue.use(VueRouter);
 
 // const routes = [
@@ -42,12 +40,11 @@ router.beforeEach((to, from, next) => {
       // store
       //   .dispatch("authorization")
       //   .then((rules) => {
-      // const rules = ["admin"];
-      const rules = { Form: true, List: false, About: true };
+      const rules = ["about"];
       store
         .dispatch("concatRoutes", rules)
         .then((routers) => {
-          console.log(routers);
+          console.log(JSON.stringify(routers));
           router.addRoutes(routers);
           // console.log(router);
           next({ ...to, replace: true });
