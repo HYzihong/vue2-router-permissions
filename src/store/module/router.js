@@ -1,16 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2021-08-10 08:34:33
- * @LastEditTime: 2021-08-10 09:18:21
+ * @LastEditTime: 2021-08-11 16:37:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vue2-router-permissions/src/store/module/router.js
  */
-import asyncRoutes from "../../router/module/asyncRoutes";
 import basicsRoutes from "../../router/module/basicsRoutes";
+import ajaxRouter from "../../utils/ajaxRouter";
+import routerMap from "../../utils/routerMap";
 
 const state = {
-  routers: basicsRoutes,
+  routers: [],
   hasGetRules: false,
 };
 
@@ -23,38 +24,35 @@ const mutations = {
   },
 };
 
-const getAccesRouterList = (basicsRoutes, rules) => {
-  return basicsRoutes.filter((item) => {
-    console.log(item);
-    if (rules[item.name]) {
-      if (item.children)
-        item.children = getAccesRouterList(item.children, rules);
-      return true;
-    } else return false;
-  });
+// 方案一：简单的view结构使用
+// const returnView = (url) => {
+//   return () => import(`../../views/${url}.vue`);
+// };
+// const initRoute = (router) => {
+//   router.component = returnView(router.component);
+//   if (router.children) getAccesRouterList(router.children);
+//   return router;
+// };
+
+// 方案二：复杂的view结构使用
+const initRoute = (router) => {
+  router.component = routerMap[router.component];
+  if (router.children) getAccesRouterList(router.children);
+  return router;
+};
+
+const getAccesRouterList = (ajaxRouter) => {
+  return ajaxRouter.map((item) => initRoute(item));
 };
 
 const actions = {
-  concatRoutes({ commit }, rules) {
-    console.log(rules);
+  concatRoutes({ commit }) {
     return new Promise((resolve, reject) => {
       try {
         let routerList = [];
-        // console.log(Object.entries(rules));
-        /*
-        ["Form", true]
-        ["List", false]
-        ["About", false]
-        */
-        if (Object.entries(rules).every((item) => item[1])) {
-          routerList = asyncRoutes;
-        } else {
-          // 递归asyncRoutes，看是否有权限访问
-          routerList = getAccesRouterList(asyncRoutes, rules);
-          // console.log(routerList);
-        }
+        routerList = getAccesRouterList(ajaxRouter);
         commit("CONCAT_ROUTES", routerList);
-        // console.log(routerList);
+        console.log(routerList);
         resolve(state.routers);
       } catch (err) {
         reject(err);
